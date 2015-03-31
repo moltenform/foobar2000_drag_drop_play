@@ -2,6 +2,17 @@
 
 #include "window_helper.h"
 
+class CTutorialPlaybackQueueResponder :
+	public playback_queue_callback
+{
+	public: CTutorialPlaybackQueueResponder()
+	{
+	}
+
+	// playback_queue_callback methods
+	virtual void on_changed(t_change_origin p_origin);
+};
+
 // This class implements our window. 
 // It uses a helper class from window_helper.h that emulates
 // ATL/WTL conventions. The custom helper class is used to
@@ -16,7 +27,8 @@
 class CDragDropPlayWindow :
 	public CSimpleWindowImpl<CDragDropPlayWindow>,
 	private message_filter,
-	private play_callback
+	private play_callback,
+	private playlist_callback
 {
 public:
 	typedef CSimpleWindowImpl<CDragDropPlayWindow> super;
@@ -34,8 +46,6 @@ public:
 	void OnClose();
 	void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	void OnLButtonDown(UINT nFlags, CPoint point);
-	void OnContextMenu(HWND hWnd, CPoint point);
-	void OnSetFocus(HWND hWndOld);
 	void OnPaint(HDC hdc);
 	void OnPrintClient(HDC hdc, UINT uFlags);
 
@@ -51,10 +61,12 @@ public:
 
 private:
 	// This is a singleton class.
-	CDragDropPlayWindow() {}
+	CDragDropPlayWindow() : _needsUpdate(false) {}
 	~CDragDropPlayWindow() {}
 
 	static CDragDropPlayWindow g_instance;
+	bool _needsUpdate;
+	service_ptr_t<CTutorialPlaybackQueueResponder> playbackQueueResponder;
 
 	void set_selection(metadb_handle_list_cref p_items);
 
@@ -74,6 +86,29 @@ private:
 	virtual void on_playback_dynamic_info(const file_info & p_info) {}
 	virtual void on_playback_time(double p_time) {}
 	virtual void on_volume_change(float p_new_val) {}
+
+	// playlist_callback methods (the ones we're interested in)
+	virtual void on_items_added(t_size p_playlist, t_size p_start, const pfc::list_base_const_t<metadb_handle_ptr> & p_data, const bit_array & p_selection);//inside any of these methods, you can call playlist APIs to get exact info about what happened (but only methods that read playlist state, not those that modify it)
+
+	// playlist_callback methods (the rest)
+	virtual void on_items_reordered(t_size p_playlist, const t_size * p_order, t_size p_count) { }//changes selection too; doesnt actually change set of items that are selected or item having focus, just changes their order
+	virtual void on_items_removing(t_size p_playlist, const bit_array & p_mask, t_size p_old_count, t_size p_new_count) { }//called before actually removing them
+	virtual void on_items_removed(t_size p_playlist, const bit_array & p_mask, t_size p_old_count, t_size p_new_count) { }
+	virtual void on_items_selection_change(t_size p_playlist, const bit_array & p_affected, const bit_array & p_state) { }
+	virtual void on_item_focus_change(t_size p_playlist, t_size p_from, t_size p_to) { }//focus may be -1 when no item has focus; reminder: focus may also change on other callbacks
+	virtual void on_items_modified(t_size p_playlist, const bit_array & p_mask) { }
+	virtual void on_items_modified_fromplayback(t_size p_playlist, const bit_array & p_mask, play_control::t_display_level p_level) { }
+	virtual void on_items_replaced(t_size p_playlist, const bit_array & p_mask, const pfc::list_base_const_t<t_on_items_replaced_entry> & p_data) { }
+	virtual void on_item_ensure_visible(t_size p_playlist, t_size p_idx) { }
+	virtual void on_playlist_activate(t_size p_old, t_size p_new) { }
+	virtual void on_playlist_created(t_size p_index, const char * p_name, t_size p_name_len) { }
+	virtual void on_playlists_reorder(const t_size * p_order, t_size p_count) { }
+	virtual void on_playlists_removing(const bit_array & p_mask, t_size p_old_count, t_size p_new_count) { }
+	virtual void on_playlists_removed(const bit_array & p_mask, t_size p_old_count, t_size p_new_count) { }
+	virtual void on_playlist_renamed(t_size p_index, const char * p_new_name, t_size p_new_name_len) { }
+	virtual void on_default_format_changed() { }
+	virtual void on_playback_order_changed(t_size p_new_index) { }
+	virtual void on_playlist_locked(t_size p_playlist, bool p_locked) { }
 
 private:
 	CFont m_font;
