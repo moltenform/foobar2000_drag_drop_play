@@ -34,57 +34,21 @@ so their constructor takes only one parameter.
 
 // boolean variable
 // Stores whether the window is enabled.
-static const GUID guid_cfg_enabled = { 0xdaa7975e, 0x5147, 0x4252, { 0xa8, 0xb8, 0x65, 0x94, 0x0, 0x2e, 0x60, 0x69 } };
+static const GUID guid_cfg_enabled = { 0x1f352536, 0xe21d, 0x4bf5, { 0xa0, 0xe1, 0x60, 0xc7, 0xee, 0xb0, 0xad, 0x6a } };
 cfg_bool cfg_enabled(guid_cfg_enabled, false);
 
 // window placement variable
 // Stores the position of the window.
 // This variable type is provided by the SDK helpers library.
-static const GUID guid_cfg_popup_window_placement = { 0xc2c12570, 0xda02, 0x4832, { 0xae, 0xfd, 0x68, 0x65, 0x80, 0x7a, 0xdc, 0x17 } };
+static const GUID guid_cfg_popup_window_placement = { 0x1dbb8f5f, 0xaf6d, 0x4649, { 0xa8, 0xb3, 0x94, 0x44, 0xaa, 0xf8, 0x22, 0xa4 } };
 cfg_window_placement cfg_popup_window_placement(guid_cfg_popup_window_placement);
 
-// We will draw some text on our window. Therefore, we
-// need a font. Letting the user choose the font is better
-// than choosing one ourselves.
 
 // helper function to get the font used for message boxes as uLOGFONT structure
-static t_font_description get_def_font()
+t_font_description get_def_font()
 {
 	NONCLIENTMETRICS ncmetrics = { 0 };
 	ncmetrics.cbSize = sizeof(ncmetrics);
 	SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncmetrics), &ncmetrics, 0);
 	return t_font_description::g_from_font(CreateFontIndirect(&ncmetrics.lfMessageFont));
 }
-
-// Stores the font used for drawing text on the window.
-static const GUID guid_cfg_font = { 0x44983f90, 0x7632, 0x4a3f, { 0x8d, 0x2a, 0xe4, 0x6e, 0x7a, 0xdc, 0x8f, 0x9 } };
-cfg_struct_t<t_font_description> cfg_font(guid_cfg_font, get_def_font());
-
-/**************************
-Advanced preferences.
-
-Since we want to use a title formatting string for the displayed
-information, it would be nice if the user could change it. The
-"Advanced" preferences page is normally used for rarely accessed
-settings. Here, we use it as a cheap way to avoid having to implement
-a user interface for the configuration. The downside is that we
-will not be notified when the string changes, so changes will only
-become visible when redrawing is triggered through other means.
-
-The advanced preferences is organized as so-called branches and
-settings. We will put our single setting in the "Display" branch.
-**************************/
-
-static const GUID guid_advconfig_string_format = { 0xabd92014, 0xdebc, 0x4844, { 0xa6, 0x15, 0xa, 0x5c, 0x60, 0xb9, 0x72, 0xab } };
-advconfig_string_factory g_advconfig_string_format(
-	// display name
-	EXTENSIONNAME " title formatting string",
-	// GUID of our setting
-	guid_advconfig_string_format,
-	// GUID of the parent branch
-	advconfig_branch::guid_branch_display,
-	// sorting priority (we leave it at 0.0)
-	0.0,
-	// initial value
-	"[%album artist% - ]['['%album%[ CD%discnumber%][ #%tracknumber%]']' ]%title%[ '//' %track artist%]"
-);
