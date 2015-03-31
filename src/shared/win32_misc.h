@@ -229,10 +229,17 @@ private:
 };
 
 // Same format as _WIN32_WINNT macro.
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable:4996 )
+#endif
 static WORD GetWindowsVersionCode() throw() {
 	const DWORD ver = GetVersion();
 	return (WORD)HIBYTE(LOWORD(ver)) | ((WORD)LOBYTE(LOWORD(ver)) << 8);
 }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 //! Simple implementation of a COM reference counter. The initial reference count is zero, so it can be used with pfc::com_ptr_t<> with plain operator=/constructor rather than attach().
 template<typename TBase> class ImplementCOMRefCounter : public TBase {

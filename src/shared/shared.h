@@ -818,9 +818,16 @@ static HMODULE LoadSystemLibrary(const TCHAR * name) {
 	if (GetSystemDirectory(bufptr, MAX_PATH) == 0) return NULL;
 	bufptr[MAX_PATH] = 0;
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable:4996 )
+#endif
 	size_t idx = _tcslen(bufptr);
 	if (idx > 0 && bufptr[idx-1] != '\\') bufptr[idx++] = '\\';
 	_tcscpy(bufptr+idx, name);
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 	
 	return LoadLibrary(bufptr);
 }

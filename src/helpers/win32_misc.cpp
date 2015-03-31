@@ -112,10 +112,17 @@ void GetOSVersionStringAppend(pfc::string_base & out) {
 
 	if (FetchWineInfoAppend(out)) return;
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable:4996 )
+#endif
 	OSVERSIONINFO ver = {}; ver.dwOSVersionInfoSize = sizeof(ver);
 	WIN32_OP( GetVersionEx(&ver) );
 	SYSTEM_INFO info = {};
 	GetNativeSystemInfo(&info);
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 	
 	out << "Windows " << (int)ver.dwMajorVersion << "." << (int)ver.dwMinorVersion << "." << (int)ver.dwBuildNumber;
 	if (ver.szCSDVersion[0] != 0) out << " " << pfc::stringcvt::string_utf8_from_os(ver.szCSDVersion, PFC_TABSIZE(ver.szCSDVersion));

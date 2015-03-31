@@ -222,10 +222,18 @@ unsigned QueryScreenDPI();
 
 SIZE QueryScreenDPIEx();
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable:4996 )
+#endif
 static WORD GetOSVersion() {
 	const DWORD ver = GetVersion();
 	return (WORD)HIBYTE(LOWORD(ver)) | ((WORD)LOBYTE(LOWORD(ver)) << 8);
 }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
+
 
 #if _WIN32_WINNT >= 0x501
 #define WS_EX_COMPOSITED_Safe() WS_EX_COMPOSITED

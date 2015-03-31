@@ -104,10 +104,18 @@ public:
 		auto ver = myGetOSVersion();
 		return ver >= 0x602;
 	}
+
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable:4996 )
+#endif
 	static WORD myGetOSVersion() {
 		const DWORD ver = GetVersion();
 		return (WORD)HIBYTE(LOWORD(ver)) | ((WORD)LOBYTE(LOWORD(ver)) << 8);
 	}
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 	pPowerCreateRequest_t PowerCreateRequest;
 	pPowerSetRequest_t PowerSetRequest;
