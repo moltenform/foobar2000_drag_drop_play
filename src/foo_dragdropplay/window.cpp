@@ -30,66 +30,52 @@ HWND CDragDropPlayWindow::Create(HWND p_hWndParent) {
 BOOL CDragDropPlayWindow::ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & lResult) {
 	switch (uMsg) {
 	case WM_CREATE:
-		{
-			lResult = OnCreate(reinterpret_cast<LPCREATESTRUCT>(lParam));
-			return TRUE;
-		}
+	{
+		lResult = OnCreate(reinterpret_cast<LPCREATESTRUCT>(lParam));
+		return TRUE;
+	}
 
 	case WM_DESTROY:
-		{
-			OnDestroy();
-			lResult = 0;
-			return TRUE;
-		}
+	{
+		OnDestroy();
+		lResult = 0;
+		return TRUE;
+	}
 
 	case WM_CLOSE:
-		{
-			OnClose();
-			lResult = 0;
-			return TRUE;
-		}
+	{
+		OnClose();
+		lResult = 0;
+		return TRUE;
+	}
 
 	case WM_KEYDOWN:
-		{
-			OnKeyDown((TCHAR)wParam, (UINT)lParam & 0xfff, (UINT)((lParam >> 16) & 0xffff));
-			lResult = 0;
-			return TRUE;
-		}
+	{
+		OnKeyDown((TCHAR)wParam, (UINT)lParam & 0xfff, (UINT)((lParam >> 16) & 0xffff));
+		lResult = 0;
+		return TRUE;
+	}
 
 	case WM_LBUTTONDOWN:
-		{
-			OnLButtonDown(wParam, CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
-			lResult = 0;
-			return TRUE;
-		}
-
-	case WM_CONTEXTMENU:
-		{
-			OnContextMenu((HWND)wParam, CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
-			lResult = 0;
-			return TRUE;
-		}
-
-	case WM_SETFOCUS:
-		{
-			OnSetFocus((HWND)wParam);
-			lResult = 0;
-			return TRUE;
-		}
+	{
+		OnLButtonDown(wParam, CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		lResult = 0;
+		return TRUE;
+	}
 
 	case WM_PAINT:
-		{
-			OnPaint((HDC)wParam);
-			lResult = 0;
-			return TRUE;
-		}
+	{
+		OnPaint((HDC)wParam);
+		lResult = 0;
+		return TRUE;
+	}
 
 	case WM_PRINTCLIENT:
-		{
-			OnPrintClient((HDC)wParam, (UINT)lParam);
-			lResult = 0;
-			return TRUE;
-		}
+	{
+		OnPrintClient((HDC)wParam, (UINT)lParam);
+		lResult = 0;
+		return TRUE;
+	}
 	}
 
 	// The framework will call DefWindowProc() for us.
@@ -123,6 +109,11 @@ LRESULT CDragDropPlayWindow::OnCreate(LPCREATESTRUCT pCreateStruct) {
 		flag_on_playback_stop,
 		false);
 
+	// Register ourselves for playlist events
+	static_api_ptr_t<playlist_manager>()->register_callback(this,
+		flag_on_items_added |
+		flag_on_items_reordered);
+
 	return 0;
 }
 
@@ -152,10 +143,7 @@ void CDragDropPlayWindow::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 }
 
 void CDragDropPlayWindow::OnLButtonDown(UINT nFlags, CPoint point) {
-	// Get currently playing track.
-	static_api_ptr_t<play_control> pc;
-	metadb_handle_ptr handle;
-
+	
 }
 
 void CDragDropPlayWindow::OnPaint(HDC hdc) {
@@ -176,7 +164,8 @@ void CDragDropPlayWindow::PaintContent(PAINTSTRUCT &ps) {
 		// Do not use double buffering, if we are running on a Remote Desktop Connection.
 		// The system would have to transfer a bitmap everytime our window is painted.
 		Draw(ps.hdc, ps.rcPaint);
-	} else if (!IsRectEmpty(&ps.rcPaint)) {
+	}
+	else if (!IsRectEmpty(&ps.rcPaint)) {
 		// Use double buffering for local drawing.
 		CMemoryDC dc(ps.hdc, ps.rcPaint);
 		Draw(dc, ps.rcPaint);
@@ -210,98 +199,39 @@ void CDragDropPlayWindow::Draw(HDC hdc, CRect rcPaint) {
 				hFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
 			SelectObject(hdc, hFont);
 			SetTextAlign(hdc, TA_TOP | TA_LEFT);
-			uExtTextOut(hdc, 32+4, 2, ETO_CLIPPED, rcPaint, text, text.length(), 0);
+			//uExtTextOut(hdc, 32 + 4, 2, ETO_CLIPPED, rcPaint, text, text.length(), 0);
+			const char* hardcodedtext = "Autoplay, Ben Fisher";
+			uExtTextOut(hdc, 32 + 4, 2, ETO_CLIPPED, rcPaint, hardcodedtext, strlen(hardcodedtext), 0);
 		}
 	}
 	catch (const std::exception & exc) {
 		console::formatter() << "Exception occurred while drawing " EXTENSIONNAME " window:\n" << exc;
 	}
-}
 
-void CDragDropPlayWindow::OnContextMenu(HWND hWnd, CPoint point) {
-	// We need some IDs for the context menu.
-	enum {
-		// ID for "Choose font..."
-		ID_FONT = 1,
-		// The range ID_CONTEXT_FIRST through ID_CONTEXT_LAST is reserved
-		// for menu entries from menu_manager.
-		ID_CONTEXT_FIRST,
-		ID_CONTEXT_LAST = ID_CONTEXT_FIRST + 1000,
-	};
-
-	// Create new popup menu.
-	HMENU hMenu = CreatePopupMenu();
-
-	// Add our "Choose font..." command.
-	AppendMenu(hMenu, MF_STRING, ID_FONT, TEXT("Choose font..."));
-
-	// Get the currently playing track.
-	metadb_handle_list items;
-	static_api_ptr_t<play_control> pc;
-	metadb_handle_ptr handle;
-	if (pc->get_now_playing(handle)) {
-		// Insert it into a list.
-		items.add_item(handle);
-	}
-
-	// Create a menu_manager that will build the context menu.
-	service_ptr_t<contextmenu_manager> cmm;
-	contextmenu_manager::g_create(cmm);
-	// Query setting for showing keyboard shortcuts.
-	const bool show_shortcuts = config_object::g_get_data_bool_simple(standard_config_objects::bool_show_keyboard_shortcuts_in_menus, false);
-	// Set up flags for contextmenu_manager::init_context.
-	unsigned flags = show_shortcuts ? contextmenu_manager::FLAG_SHOW_SHORTCUTS : 0;
-	// Initialize menu_manager for using a context menu.
-	cmm->init_context(items, flags);
-	// If the menu_manager has found any applicable commands,
-	// add them to our menu (after a separator).
-	if (cmm->get_root()) {
-		uAppendMenu(hMenu, MF_SEPARATOR, 0, 0);
-		cmm->win32_build_menu(hMenu, ID_CONTEXT_FIRST, ID_CONTEXT_LAST);
-	}
-
-	// Use menu helper to gnereate mnemonics.
-	menu_helpers::win32_auto_mnemonics(hMenu);
-
-	// Get the location of the mouse pointer.
-	// WM_CONTEXTMENU provides position of mouse pointer in argument lp,
-	// but this isn't reliable (for example when the user pressed the
-	// context menu key on the keyboard).
-	CPoint pt;
-	GetCursorPos(pt);
-	// Show the context menu.
-	int cmd = TrackPopupMenu(hMenu, TPM_NONOTIFY | TPM_RETURNCMD | TPM_RIGHTBUTTON, 
-		pt.x, pt.y, 0, m_hWnd, 0);
-
-	// Check what command has been chosen. If cmd == 0, then no command
-	// was chosen.
-	if (cmd == ID_FONT) {
-		// Show font configuration.
-		t_font_description font = cfg_font;
-		if (font.popup_dialog(m_hWnd)) {
-			cfg_font = font;
-			m_font = font.create();
-			::RedrawWindow(m_hWnd, 0, 0, RDW_INVALIDATE|RDW_UPDATENOW);
+	if (_needsUpdate)
+	{
+		if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0)
+		{
+			// so it is 0 based, that makes sense. note we need to open the window before anything works.
+			static_api_ptr_t<playlist_manager> playlistman;
+			t_size length = playlistman->activeplaylist_get_item_count();
+			if (length >= 2)
+			{
+				bit_array_bittable whichToRemove(length + 1);
+				for (int i = 0; i < (int)(length - 1); i++)
+					whichToRemove.set(i, true);
+				playlistman->activeplaylist_remove_items(whichToRemove);
+			}
+			t_size length2 = playlistman->activeplaylist_get_item_count();
+			if (length2 >= 1)
+			{
+				playlistman->activeplaylist_execute_default_action(0);
+			}
 		}
-	} else if (cmd >= ID_CONTEXT_FIRST && cmd <= ID_CONTEXT_LAST ) {
-		// Let the menu_manager execute the chosen command.
-		cmm->execute_by_id(cmd - ID_CONTEXT_FIRST);
+		_needsUpdate = false;
 	}
-
-	// contextmenu_manager instance is released automatically, as is the metadb_handle we used.
-
-	// Finally, destroy the popup menu.
-	DestroyMenu(hMenu);
 }
 
-void CDragDropPlayWindow::OnSetFocus(HWND hWndOld) {
-	metadb_handle_list items;
-	metadb_handle_ptr track;
-	if (static_api_ptr_t<playback_control>()->get_now_playing(track)) {
-		items.add_item(track);
-	}
-	set_selection(items);
-}
 
 void CDragDropPlayWindow::set_selection(metadb_handle_list_cref p_items) {
 	// Only notify other components about changes in our selection,
@@ -332,5 +262,21 @@ void CDragDropPlayWindow::on_playback_stop(play_control::t_stop_reason reason) {
 }
 
 void CDragDropPlayWindow::on_playback_dynamic_info_track(const file_info & p_info) {
+	RedrawWindow();
+}
+
+void CTutorialPlaybackQueueResponder::on_changed(t_change_origin p_origin)
+{
+	::MessageBoxA(0, "on_changed", "on_changed", 0);
+	if (p_origin == changed_user_added)
+	{
+		::MessageBoxA(0, "changed_user_added", "changed_user_added", 0);
+	}
+}
+
+void CDragDropPlayWindow::on_items_added(t_size p_playlist, t_size p_start, const pfc::list_base_const_t<metadb_handle_ptr> & p_data, const bit_array & p_selection)
+{
+	//inside any of these methods, you can call playlist APIs to get exact info about what happened (but only methods that read playlist state, not those that modify it)
+	_needsUpdate = true;
 	RedrawWindow();
 }

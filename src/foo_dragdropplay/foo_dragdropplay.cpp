@@ -18,7 +18,7 @@ DECLARE_COMPONENT_VERSION(
 	"1.0-beta",
 	// about text
 	"Plugin for Foobar2000 audio player that plays music instantly after drag and drop\n"
-	"for foobar2000\n"
+	"https://github.com/downpoured/foobar2000_drag_drop_play\n"
 	"\n"
 	"contributors:\n"
 	"Ben Fisher"
