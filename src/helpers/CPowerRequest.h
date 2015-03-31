@@ -1,4 +1,6 @@
-#if (_WIN32_WINNT < _WIN32_WINNT_WIN7) && !defined(_MINWINBASE)
+
+// #if (_WIN32_WINNT < _WIN32_WINNT_WIN7) && !defined(_MINWINBASE)
+#if 0
 
 typedef struct _REASON_CONTEXT {
     ULONG Version;

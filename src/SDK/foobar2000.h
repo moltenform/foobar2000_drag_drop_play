@@ -12,7 +12,7 @@
 //#define FOOBAR2000_TARGET_VERSION 77 // 1.1
 #define FOOBAR2000_TARGET_VERSION 78 // 1.2.7
 
-#include "../../pfc/pfc.h"
+#include "../pfc/pfc.h"
 
 #include "../shared/shared.h"
 
