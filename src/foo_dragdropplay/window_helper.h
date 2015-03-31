@@ -30,26 +30,31 @@ class CBitmap
 public:
 	HBITMAP m_hBitmap;
 
-	CBitmap(HBITMAP hBitmap = NULL) : m_hBitmap(hBitmap) {
+	CBitmap(HBITMAP hBitmap = NULL) : m_hBitmap(hBitmap)
+	{
 	}
 
-	~CBitmap() {
+	~CBitmap()
+	{
 		if (m_hBitmap != NULL)
 			::DeleteObject(m_hBitmap);
 	}
 
-	CBitmap &operator =(HBITMAP hBitmap) {
+	CBitmap &operator =(HBITMAP hBitmap)
+	{
 		Attach(hBitmap);
 		return *this;
 	}
 
-	void Attach(HBITMAP hBitmap) {
+	void Attach(HBITMAP hBitmap)
+	{
 		if (m_hBitmap != NULL && m_hBitmap != hBitmap)
 			::DeleteObject(m_hBitmap);
 		m_hBitmap = hBitmap;
 	}
 
-	HBITMAP Detach() {
+	HBITMAP Detach()
+	{
 		HBITMAP hBitmap = m_hBitmap;
 		m_hBitmap = NULL;
 		return hBitmap;
@@ -63,26 +68,31 @@ class CFont
 public:
 	HFONT m_hFont;
 
-	CFont(HFONT hFont = NULL) : m_hFont(hFont) {
+	CFont(HFONT hFont = NULL) : m_hFont(hFont)
+	{
 	}
 
-	~CFont() {
+	~CFont()
+	{
 		if (m_hFont != NULL)
 			::DeleteObject(m_hFont);
 	}
 
-	CFont &operator =(HFONT hFont) {
+	CFont &operator =(HFONT hFont)
+	{
 		Attach(hFont);
 		return *this;
 	}
 
-	void Attach(HFONT hFont) {
+	void Attach(HFONT hFont)
+	{
 		if (m_hFont != NULL && m_hFont != hFont)
 			::DeleteObject(m_hFont);
 		m_hFont = hFont;
 	}
 
-	HFONT Detach() {
+	HFONT Detach()
+	{
 		HFONT hFont = m_hFont;
 		m_hFont = NULL;
 		return hFont;
@@ -96,26 +106,31 @@ class CDC
 public:
 	HDC m_hDC;
 
-	CDC(HDC hDC = NULL) : m_hDC(hDC) {
+	CDC(HDC hDC = NULL) : m_hDC(hDC)
+	{
 	}
 
-	~CDC() {
+	~CDC()
+	{
 		if (m_hDC != NULL)
 			::DeleteDC(m_hDC);
 	}
 
-	CDC &operator =(HDC hDC) {
+	CDC &operator =(HDC hDC)
+	{
 		Attach(hDC);
 		return *this;
 	}
 
-	void Attach(HDC hDC) {
+	void Attach(HDC hDC)
+	{
 		if (m_hDC != hDC && m_hDC != hDC)
 			::DeleteDC(m_hDC);
 		m_hDC = hDC;
 	}
 
-	HDC Detach() {
+	HDC Detach()
+	{
 		HDC hDC = m_hDC;
 		m_hDC = NULL;
 		return m_hDC;
@@ -130,12 +145,14 @@ public:
 	HWND m_hWnd;
 	PAINTSTRUCT m_ps;
 
-	CPaintDC(HWND hWnd) {
+	CPaintDC(HWND hWnd)
+	{
 		m_hWnd = hWnd;
 		m_hDC = ::BeginPaint(m_hWnd, &m_ps);
 	}
 
-	~CPaintDC() {
+	~CPaintDC()
+	{
 		::EndPaint(m_hWnd, &m_ps);
 		Detach();
 	}
@@ -149,7 +166,8 @@ public:
 	CBitmap m_bmp;
 	HBITMAP m_hBmpOld;
 
-	CMemoryDC(HDC hDC, RECT &rcPaint) : m_hDCOriginal(hDC), m_hBmpOld(NULL) {
+	CMemoryDC(HDC hDC, RECT &rcPaint) : m_hDCOriginal(hDC), m_hBmpOld(NULL)
+	{
 		m_rcPaint = rcPaint;
 		Attach(::CreateCompatibleDC(m_hDCOriginal));
 		m_bmp = ::CreateCompatibleBitmap(m_hDCOriginal, m_rcPaint.Width(), m_rcPaint.Height());
@@ -157,7 +175,8 @@ public:
 		::SetWindowOrgEx(m_hDC, m_rcPaint.left, m_rcPaint.top, NULL);
 	}
 
-	~CMemoryDC() {
+	~CMemoryDC()
+	{
 		::BitBlt(m_hDCOriginal, m_rcPaint.left, m_rcPaint.top, m_rcPaint.Width(), m_rcPaint.Height(), m_hDC, m_rcPaint.left, m_rcPaint.top, SRCCOPY);
 		::SelectObject(m_hDC, m_hBmpOld);
 	}
@@ -196,7 +215,8 @@ template <class T>
 LONG CSimpleWindowImpl<T>::g_refcount = 0;
 
 template <class T>
-LPCTSTR CSimpleWindowImpl<T>::GetClassName() {
+LPCTSTR CSimpleWindowImpl<T>::GetClassName()
+{
 	// set up a unique class name using the address of a variable in out class.
 	static int dummy = 0;
 	static pfc::stringcvt::string_os_from_utf8 os_class_name;
@@ -210,13 +230,16 @@ LPCTSTR CSimpleWindowImpl<T>::GetClassName() {
 }
 
 template <class T>
-HWND CSimpleWindowImpl<T>::Create(HWND hWndParent, LPCTSTR szWindowName, DWORD dwStyle, DWORD dwExStyle, int x, int y, int nWidth, int nHeight, HMENU hMenu) {
+HWND CSimpleWindowImpl<T>::Create(HWND hWndParent, LPCTSTR szWindowName, DWORD dwStyle, DWORD dwExStyle, int x, int y, int nWidth, int nHeight, HMENU hMenu)
+{
 	T *_this = static_cast<T *>(this);
 
 	assert(_this->m_hWnd == NULL);
 
-	if (g_refcount == 0) {
-		if (g_class_atom == NULL) {
+	if (g_refcount == 0)
+	{
+		if (g_class_atom == NULL)
+		{
 			WNDCLASS wc = { 0 };
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 			wc.lpfnWndProc = &WindowProc;
@@ -229,7 +252,8 @@ HWND CSimpleWindowImpl<T>::Create(HWND hWndParent, LPCTSTR szWindowName, DWORD d
 		}
 	}
 
-	if (g_class_atom != NULL) {
+	if (g_class_atom != NULL)
+	{
 		g_refcount++;
 
 		return ::CreateWindowEx(
@@ -248,14 +272,17 @@ HWND CSimpleWindowImpl<T>::Create(HWND hWndParent, LPCTSTR szWindowName, DWORD d
 }
 
 template <class T>
-void CSimpleWindowImpl<T>::Destroy() {
+void CSimpleWindowImpl<T>::Destroy()
+{
 	// Destroy the window.
-	if (m_hWnd) {
+	if (m_hWnd)
+	{
 		::DestroyWindow(m_hWnd);
 
 		g_refcount--;
 
-		if (g_refcount == 0) {
+		if (g_refcount == 0)
+		{
 			::UnregisterClass((LPCTSTR)g_class_atom, core_api::get_my_instance());
 			g_class_atom = 0;
 		}
@@ -263,32 +290,41 @@ void CSimpleWindowImpl<T>::Destroy() {
 }
 
 template <class T>
-LRESULT WINAPI CSimpleWindowImpl<T>::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT WINAPI CSimpleWindowImpl<T>::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
 	T *_this;
 
-	if (uMsg == WM_NCCREATE) {
+	if (uMsg == WM_NCCREATE)
+	{
 		LPCREATESTRUCT lpCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
 		_this = reinterpret_cast<T *>(lpCreateStruct->lpCreateParams);
 		_this->m_hWnd = hWnd;
 		SetWindowLongPtr(hWnd, 0, (LONG_PTR)_this);
-	} else {
+	}
+	else
+	{
 		 _this = reinterpret_cast<T *>(GetWindowLongPtr(hWnd, 0));
 	}
 
 	BOOL bHandled = FALSE;
 	LRESULT lResult = 0;
-	if (_this != 0) {
-		try {
+	if (_this != 0)
+	{
+		try
+		{
 			BOOL bHandled = _this->ProcessWindowMessage(hWnd, uMsg, wParam, lParam, lResult);
 		}
-		catch (const std::exception &) {
+		catch (const std::exception &)
+		{
 		}
 	}
-	if (!bHandled) {
+	if (!bHandled)
+	{
 		lResult = DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 
-	if (uMsg == WM_NCDESTROY) {
+	if (uMsg == WM_NCDESTROY)
+	{
 		_this->m_hWnd = 0;
 	}
 
@@ -296,7 +332,8 @@ LRESULT WINAPI CSimpleWindowImpl<T>::WindowProc(HWND hWnd, UINT uMsg, WPARAM wPa
 }
 
 template <class T>
-BOOL CSimpleWindowImpl<T>::ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & lResult) {
+BOOL CSimpleWindowImpl<T>::ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & lResult)
+{
 	lResult = ::DefWindowProc(m_hWnd, msg, wParam, lParam);
 	return TRUE;
 }

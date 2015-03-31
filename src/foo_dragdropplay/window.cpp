@@ -5,13 +5,16 @@
 
 CDragDropPlayWindow CDragDropPlayWindow::g_instance;
 
-void CDragDropPlayWindow::ShowWindow() {
-	if (!g_instance.IsWindow()) {
+void CDragDropPlayWindow::ShowWindow()
+{
+	if (!g_instance.IsWindow())
+	{
 		cfg_enabled = (g_instance.Create(core_api::get_main_window()) != NULL);
 	}
 }
 
-void CDragDropPlayWindow::HideWindow() {
+void CDragDropPlayWindow::HideWindow()
+{
 	// Set window state to disabled.
 	cfg_enabled = false;
 
@@ -19,16 +22,19 @@ void CDragDropPlayWindow::HideWindow() {
 	g_instance.Destroy();
 }
 
-HWND CDragDropPlayWindow::Create(HWND p_hWndParent) {
+HWND CDragDropPlayWindow::Create(HWND p_hWndParent)
+{
 	return super::Create(core_api::get_main_window(),
 		TEXT(EXTENSIONNAME),
 		WS_POPUP | WS_THICKFRAME | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_VISIBLE,
 		WS_EX_TOOLWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, 730, 70);
+		CW_USEDEFAULT, CW_USEDEFAULT, 540, 128);
 }
 
-BOOL CDragDropPlayWindow::ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & lResult) {
-	switch (uMsg) {
+BOOL CDragDropPlayWindow::ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & lResult)
+{
+	switch (uMsg)
+	{
 	case WM_CREATE:
 	{
 		lResult = OnCreate(reinterpret_cast<LPCREATESTRUCT>(lParam));
@@ -82,7 +88,8 @@ BOOL CDragDropPlayWindow::ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wPar
 	return FALSE;
 }
 
-LRESULT CDragDropPlayWindow::OnCreate(LPCREATESTRUCT pCreateStruct) {
+LRESULT CDragDropPlayWindow::OnCreate(LPCREATESTRUCT pCreateStruct)
+{
 	if (DefWindowProc(m_hWnd, WM_CREATE, 0, (LPARAM)pCreateStruct) != 0) return -1;
 
 	// If "Remember window positions" is enabled, this will
@@ -91,7 +98,7 @@ LRESULT CDragDropPlayWindow::OnCreate(LPCREATESTRUCT pCreateStruct) {
 	cfg_popup_window_placement.on_window_creation(m_hWnd);
 
 	// Initialize the font.
-	m_font = cfg_font.get_value().create();
+	m_font = get_def_font().create();
 
 	// Acquire a ui_selection_holder that allows us to notify other components
 	// of the selected tracks in our window, when it has the focus.
@@ -112,7 +119,8 @@ LRESULT CDragDropPlayWindow::OnCreate(LPCREATESTRUCT pCreateStruct) {
 	return 0;
 }
 
-void CDragDropPlayWindow::OnDestroy() {
+void CDragDropPlayWindow::OnDestroy()
+{
 	m_selection.release();
 
 	static_api_ptr_t<message_loop>()->remove_message_filter(this);
@@ -125,28 +133,34 @@ void CDragDropPlayWindow::OnDestroy() {
 	cfg_popup_window_placement.on_window_destruction(m_hWnd);
 }
 
-void CDragDropPlayWindow::OnClose() {
+void CDragDropPlayWindow::OnClose()
+{
 	// Hide and disable the window.
 	HideWindow();
 }
 
-void CDragDropPlayWindow::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	if (nChar == VK_ESCAPE) {
+void CDragDropPlayWindow::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if (nChar == VK_ESCAPE)
+	{
 		// Hide and disable the window.
 		HideWindow();
 	}
 }
 
-void CDragDropPlayWindow::OnLButtonDown(UINT nFlags, CPoint point) {
+void CDragDropPlayWindow::OnLButtonDown(UINT nFlags, CPoint point)
+{
 	
 }
 
-void CDragDropPlayWindow::OnPaint(HDC hdc) {
+void CDragDropPlayWindow::OnPaint(HDC hdc)
+{
 	CPaintDC dc(m_hWnd);
 	PaintContent(dc.m_ps);
 }
 
-void CDragDropPlayWindow::OnPrintClient(HDC hdc, UINT uFlags) {
+void CDragDropPlayWindow::OnPrintClient(HDC hdc, UINT uFlags)
+{
 	PAINTSTRUCT ps = { 0 };
 	ps.hdc = hdc;
 	GetClientRect(m_hWnd, &ps.rcPaint);
@@ -154,20 +168,24 @@ void CDragDropPlayWindow::OnPrintClient(HDC hdc, UINT uFlags) {
 	PaintContent(ps);
 }
 
-void CDragDropPlayWindow::PaintContent(PAINTSTRUCT &ps) {
-	if (GetSystemMetrics(SM_REMOTESESSION)) {
+void CDragDropPlayWindow::PaintContent(PAINTSTRUCT &ps)
+{
+	if (GetSystemMetrics(SM_REMOTESESSION))
+	{
 		// Do not use double buffering, if we are running on a Remote Desktop Connection.
 		// The system would have to transfer a bitmap everytime our window is painted.
 		Draw(ps.hdc, ps.rcPaint);
 	}
-	else if (!IsRectEmpty(&ps.rcPaint)) {
+	else if (!IsRectEmpty(&ps.rcPaint))
+	{
 		// Use double buffering for local drawing.
 		CMemoryDC dc(ps.hdc, ps.rcPaint);
 		Draw(dc, ps.rcPaint);
 	}
 }
 
-void CDragDropPlayWindow::Draw(HDC hdc, CRect rcPaint) {
+void CDragDropPlayWindow::Draw(HDC hdc, CRect rcPaint)
+{
 	// We will paint the background in the default window color.
 	HBRUSH hBrush = GetSysColorBrush(COLOR_WINDOW);
 	FillRect(hdc, rcPaint, hBrush);
@@ -190,7 +208,8 @@ void CDragDropPlayWindow::Draw(HDC hdc, CRect rcPaint) {
 			uExtTextOut(hdc, 10, 2 + i * 30, ETO_CLIPPED, rcPaint, hardcodedtext[i], strlen(hardcodedtext[i]), 0);
 		}
 	}
-	catch (const std::exception & exc) {
+	catch (const std::exception & exc)
+	{
 		console::formatter() << "Exception occurred while drawing " EXTENSIONNAME " window:\n" << exc;
 	}
 
@@ -227,7 +246,8 @@ void CDragDropPlayWindow::Draw(HDC hdc, CRect rcPaint) {
 }
 
 
-bool CDragDropPlayWindow::pretranslate_message(MSG * p_msg) {
+bool CDragDropPlayWindow::pretranslate_message(MSG * p_msg)
+{
 	// Process keyboard shortcuts
 	if (static_api_ptr_t<keyboard_shortcut_manager_v2>()->pretranslate_message(p_msg, m_hWnd)) return true;
 
