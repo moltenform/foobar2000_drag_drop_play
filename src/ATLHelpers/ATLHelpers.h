@@ -6,11 +6,8 @@
 #include <atlbase.h>
 #include <atltypes.h>
 #include <atlstr.h>
-#include <atlapp.h>
-#include <atlctrls.h>
 #include <atlwin.h>
 #include <atlcom.h>
-#include <atlcrack.h>
 
 #include "../SDK/foobar2000.h"
 #include "../helpers/helpers.h"

@@ -4,7 +4,7 @@
 // Global flag - whether it's OK to leak static objects as they'll be released anyway by process death
 #define FB2K_LEAK_STATIC_OBJECTS 1
 
-#include "../../pfc/pfc.h"
+#include "../pfc/pfc.h"
 #include <signal.h>
 
 #ifndef WIN32
@@ -19,7 +19,8 @@
 #include <ddeml.h>
 #include <commctrl.h>
 #include <uxtheme.h>
-#include <tmschema.h>
+// see http://www.hydrogenaud.io/forums/index.php?showtopic=106221
+#include <vssym32.h>
 
 #ifndef NOTHROW
 #ifdef _MSC_VER
