@@ -2,17 +2,6 @@
 
 #include "window_helper.h"
 
-class CTutorialPlaybackQueueResponder :
-	public playback_queue_callback
-{
-	public: CTutorialPlaybackQueueResponder()
-	{
-	}
-
-	// playback_queue_callback methods
-	virtual void on_changed(t_change_origin p_origin);
-};
-
 // This class implements our window. 
 // It uses a helper class from window_helper.h that emulates
 // ATL/WTL conventions. The custom helper class is used to
@@ -27,7 +16,6 @@ class CTutorialPlaybackQueueResponder :
 class CDragDropPlayWindow :
 	public CSimpleWindowImpl<CDragDropPlayWindow>,
 	private message_filter,
-	private play_callback,
 	private playlist_callback
 {
 public:
@@ -66,26 +54,9 @@ private:
 
 	static CDragDropPlayWindow g_instance;
 	bool _needsUpdate;
-	service_ptr_t<CTutorialPlaybackQueueResponder> playbackQueueResponder;
-
-	void set_selection(metadb_handle_list_cref p_items);
 
 	// message_filter methods
 	virtual bool pretranslate_message(MSG * p_msg);
-
-	// play_callback methods (the ones we're interested in)
-	virtual void on_playback_new_track(metadb_handle_ptr p_track);
-	virtual void on_playback_stop(play_control::t_stop_reason reason);
-	virtual void on_playback_dynamic_info_track(const file_info & p_info);
-
-	// play_callback methods (the rest)
-	virtual void on_playback_starting(play_control::t_track_command p_command, bool p_paused) {}
-	virtual void on_playback_seek(double p_time) {}
-	virtual void on_playback_pause(bool p_state) {}
-	virtual void on_playback_edited(metadb_handle_ptr p_track) {}
-	virtual void on_playback_dynamic_info(const file_info & p_info) {}
-	virtual void on_playback_time(double p_time) {}
-	virtual void on_volume_change(float p_new_val) {}
 
 	// playlist_callback methods (the ones we're interested in)
 	virtual void on_items_added(t_size p_playlist, t_size p_start, const pfc::list_base_const_t<metadb_handle_ptr> & p_data, const bit_array & p_selection);//inside any of these methods, you can call playlist APIs to get exact info about what happened (but only methods that read playlist state, not those that modify it)
