@@ -5,7 +5,7 @@
 // This class implements our window. 
 // It uses a helper class from window_helper.h that emulates
 // ATL/WTL conventions. The custom helper class is used to
-// allow this tutorial to be compiled when ATL/WTL is not
+// allow to be compiled when ATL/WTL is not
 // available, for example on Visual C++ 2008 Express Edition.
 // The message_filter is used to process keyboard shortcuts.
 // To be notified about playback status changes, we need a play
@@ -13,13 +13,13 @@
 // foobar2000 0.9. Since all callback methods are guaranteed to
 // be called in the context of the main thread, we can derive
 // our window class from play_callback and register 'this'.
-class CTutorialWindow :
-	public CSimpleWindowImpl<CTutorialWindow>,
+class CDragDropPlayWindow :
+	public CSimpleWindowImpl<CDragDropPlayWindow>,
 	private message_filter,
 	private play_callback
 {
 public:
-	typedef CSimpleWindowImpl<CTutorialWindow> super;
+	typedef CSimpleWindowImpl<CDragDropPlayWindow> super;
 
 	static void ShowWindow();
 	static void HideWindow();
@@ -51,10 +51,10 @@ public:
 
 private:
 	// This is a singleton class.
-	CTutorialWindow() {}
-	~CTutorialWindow() {}
+	CDragDropPlayWindow() {}
+	~CDragDropPlayWindow() {}
 
-	static CTutorialWindow g_instance;
+	static CDragDropPlayWindow g_instance;
 
 	void set_selection(metadb_handle_list_cref p_items);
 

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="foo_tutorial1"
+	Name="foo_dragdropplay"
 	ProjectGUID="{40CDB025-3BB7-441A-A7E1-42D4F985B2EF}"
-	RootNamespace="foo_tutorial1"
+	RootNamespace="foo_dragdropplay"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -195,10 +195,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DropSourceImpl.h"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
@@ -207,7 +203,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TutorialWindow.h"
+				RelativePath=".\window.h"
 				>
 			</File>
 			<File
@@ -224,11 +220,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DropSourceImpl.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\foo_tutorial1.cpp"
+				RelativePath=".\foo_dragdropplay.cpp"
 				>
 			</File>
 			<File
@@ -252,7 +244,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\TutorialWindow.cpp"
+				RelativePath=".\window.cpp"
 				>
 			</File>
 		</Filter>
