@@ -78,7 +78,7 @@ settings. We will put our single setting in the "Display" branch.
 static const GUID guid_advconfig_string_format = { 0xabd92014, 0xdebc, 0x4844, { 0xa6, 0x15, 0xa, 0x5c, 0x60, 0xb9, 0x72, 0xab } };
 advconfig_string_factory g_advconfig_string_format(
 	// display name
-	TUTORIAL " title formatting string",
+	EXTENSIONNAME " title formatting string",
 	// GUID of our setting
 	guid_advconfig_string_format,
 	// GUID of the parent branch

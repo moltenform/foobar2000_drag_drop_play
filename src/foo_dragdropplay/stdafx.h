@@ -12,4 +12,4 @@
 
 #include <windowsx.h>
 
-#define TUTORIAL "Component Tutorial"
+#define EXTENSIONNAME "DragDropPlay"

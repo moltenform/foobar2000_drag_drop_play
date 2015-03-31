@@ -1,13 +1,9 @@
 #include "stdafx.h"
-#include "TutorialWindow.h"
+#include "window.h"
 
 #include "config.h"
 
-/**************************
-This tutorial is meant to complement to normal SDK documentation,
-it does not replace it. In particular, you should read the SDK readme
-before or while studying this tutorial.
-**************************/
+
 
 /**************************
 Providing information about a component.
@@ -15,55 +11,27 @@ Providing information about a component.
 We can provide some information about our component that 
 users will be able to view under Preferences > Components.
 **************************/
-
-
 DECLARE_COMPONENT_VERSION(
 	// component name
-	TUTORIAL,
+	EXTENSIONNAME,
 	// component version
-	"0.4",
-	// about text, use \n to separate multiple lines
-	// If you don't want any about text, set this parameter to NULL.
-	"Component development tutorial\n"
-	"for foobar2000 v0.9.5.2\n"
+	"1.0-beta",
+	// about text
+	"Plugin for Foobar2000 audio player that plays music instantly after drag and drop\n"
+	"for foobar2000\n"
 	"\n"
 	"contributors:\n"
-	"Holger Stenger"
+	"Ben Fisher"
 );
-
-
-
-
-/**************************
-Component initialization and shutdown.
-
-Global (static) variables can be assigned an initial value
-when loading the DLL by adding an initializer to their
-declarations. However, configuration variables don't "know"
-their value at that point of time and services aren't available
-yet.
-
-On the other hand, a component may need to perform some kind of
-cleanup when the application is shutting down. Doing cleanup
-when the DLL is unloading may be too late, since services are no
-longer available. One example would be storing the final value
-of some setting (window position!) in a configuration variable.
-
-So a properly behaving should component should fully initialze
-itself when all components have been loaded, and should perform
-any necessary cleanup before any component is unloaded. For this
-purpose exists the initquit callback.
-**************************/
 
 
 // Our component will show its window at initialization time, if
 // the window is enabled.
-
-class initquit_tutorial1 : public initquit {
+class initquit_dragdropplay : public initquit {
 	virtual void on_init() {
 		// Show the window, if it is enabled.
 		if (cfg_enabled)
-			CTutorialWindow::ShowWindow();
+			CDragDropPlayWindow::ShowWindow();
 	}
 
 	virtual void on_quit() {
@@ -73,27 +41,12 @@ class initquit_tutorial1 : public initquit {
 	}
 };
 
-static initquit_factory_t< initquit_tutorial1 > foo_initquit;
-
-
-
-
+static initquit_factory_t< initquit_dragdropplay > foo_initquit;
 
 /**************************
 Providing menu commands.
-
-Menu commands are one of the most important means for users
-to interact with a general purpose component. (You may argue
-that a component may have its own window with that the user
-interacts most of the time, but how does the user open this
-window? See?)
-
-There are two basic types of menu commands: main menu and
-context menu commands. This tutorial only uses main menu
-commands.
 **************************/
-
-class mainmenu_commands_tutorial1 : public mainmenu_commands {
+class mainmenu_commands_dragdropplay : public mainmenu_commands {
 	// Return the number of commands we provide.
 	virtual t_uint32 get_command_count() {
 		return 1;
@@ -101,10 +54,10 @@ class mainmenu_commands_tutorial1 : public mainmenu_commands {
 
 	// All commands are identified by a GUID.
 	virtual GUID get_command(t_uint32 p_index) {
-		static const GUID guid_main_tutorial1 = { 0x908174ba, 0xf4a5, 0x4dc2, { 0xa6, 0x8e, 0xfe, 0x85, 0x3f, 0x18, 0xda, 0x28 } };
+		static const GUID guid_main_dragdropplay = { 0x79e63d8a, 0x856d, 0x47c3, { 0x9f, 0xa, 0xd8, 0x8a, 0xf3, 0x25, 0x26, 0x4f } };
 
 		if (p_index == 0)
-			return guid_main_tutorial1;
+			return guid_main_dragdropplay;
 		return pfc::guid_null;
 	}
 
@@ -113,13 +66,13 @@ class mainmenu_commands_tutorial1 : public mainmenu_commands {
 	// the default position of the command in the menu.
 	virtual void get_name(t_uint32 p_index, pfc::string_base & p_out) {
 		if (p_index == 0)
-			p_out = TUTORIAL;
+			p_out = EXTENSIONNAME;
 	}
 
 	// Set p_out to the description for the n-th command.
 	virtual bool get_description(t_uint32 p_index, pfc::string_base & p_out) {
 		if (p_index == 0)
-			p_out = "Toggles " TUTORIAL " window.";
+			p_out = "Toggles " EXTENSIONNAME " window.";
 		else
 			return false;
 		return true;
@@ -137,10 +90,10 @@ class mainmenu_commands_tutorial1 : public mainmenu_commands {
 		if (p_index == 0 && core_api::assert_main_thread()) {
 			if (cfg_enabled)
 				// Hide and disable the window.
-				CTutorialWindow::HideWindow();
+				CDragDropPlayWindow::HideWindow();
 			else
 				// Show and enable the window.
-				CTutorialWindow::ShowWindow();
+				CDragDropPlayWindow::ShowWindow();
 		}
 	}
 
@@ -165,4 +118,4 @@ class mainmenu_commands_tutorial1 : public mainmenu_commands {
 
 // We need to create a service factory for our menu item class,
 // otherwise the menu commands won't be known to the system.
-static mainmenu_commands_factory_t< mainmenu_commands_tutorial1 > foo_menu;
+static mainmenu_commands_factory_t< mainmenu_commands_dragdropplay > foo_menu;

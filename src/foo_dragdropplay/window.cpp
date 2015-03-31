@@ -1,18 +1,17 @@
 #include "stdafx.h"
-#include "TutorialWindow.h"
-#include "DropSourceImpl.h"
+#include "window.h"
 
 #include "config.h"
 
-CTutorialWindow CTutorialWindow::g_instance;
+CDragDropPlayWindow CDragDropPlayWindow::g_instance;
 
-void CTutorialWindow::ShowWindow() {
+void CDragDropPlayWindow::ShowWindow() {
 	if (!g_instance.IsWindow()) {
 		cfg_enabled = (g_instance.Create(core_api::get_main_window()) != NULL);
 	}
 }
 
-void CTutorialWindow::HideWindow() {
+void CDragDropPlayWindow::HideWindow() {
 	// Set window state to disabled.
 	cfg_enabled = false;
 
@@ -20,15 +19,15 @@ void CTutorialWindow::HideWindow() {
 	g_instance.Destroy();
 }
 
-HWND CTutorialWindow::Create(HWND p_hWndParent) {
+HWND CDragDropPlayWindow::Create(HWND p_hWndParent) {
 	return super::Create(core_api::get_main_window(),
-		TEXT(TUTORIAL),
+		TEXT(EXTENSIONNAME),
 		WS_POPUP | WS_THICKFRAME | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_VISIBLE,
 		WS_EX_TOOLWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, 200, 200);
 }
 
-BOOL CTutorialWindow::ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & lResult) {
+BOOL CDragDropPlayWindow::ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & lResult) {
 	switch (uMsg) {
 	case WM_CREATE:
 		{
@@ -97,7 +96,7 @@ BOOL CTutorialWindow::ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wParam, 
 	return FALSE;
 }
 
-LRESULT CTutorialWindow::OnCreate(LPCREATESTRUCT pCreateStruct) {
+LRESULT CDragDropPlayWindow::OnCreate(LPCREATESTRUCT pCreateStruct) {
 	if (DefWindowProc(m_hWnd, WM_CREATE, 0, (LPARAM)pCreateStruct) != 0) return -1;
 
 	// If "Remember window positions" is enabled, this will
@@ -127,7 +126,7 @@ LRESULT CTutorialWindow::OnCreate(LPCREATESTRUCT pCreateStruct) {
 	return 0;
 }
 
-void CTutorialWindow::OnDestroy() {
+void CDragDropPlayWindow::OnDestroy() {
 	m_selection.release();
 
 	static_api_ptr_t<message_loop>()->remove_message_filter(this);
@@ -140,58 +139,31 @@ void CTutorialWindow::OnDestroy() {
 	cfg_popup_window_placement.on_window_destruction(m_hWnd);
 }
 
-void CTutorialWindow::OnClose() {
+void CDragDropPlayWindow::OnClose() {
 	// Hide and disable the window.
 	HideWindow();
 }
 
-void CTutorialWindow::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
+void CDragDropPlayWindow::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	if (nChar == VK_ESCAPE) {
 		// Hide and disable the window.
 		HideWindow();
 	}
 }
 
-void CTutorialWindow::OnLButtonDown(UINT nFlags, CPoint point) {
+void CDragDropPlayWindow::OnLButtonDown(UINT nFlags, CPoint point) {
 	// Get currently playing track.
 	static_api_ptr_t<play_control> pc;
 	metadb_handle_ptr handle;
 
-	// If some track is playing...
-	if (pc->get_now_playing(handle)) {
-		POINT pt;
-		GetCursorPos(&pt);
-
-		// ...detect a drag operation.
-		if (DragDetect(m_hWnd, pt)) {
-			metadb_handle_list items;
-			items.add_item(handle);
-
-			// Create an IDataObject that contains the dragged track.
-			static_api_ptr_t<playlist_incoming_item_filter> piif;
-			// create_dataobject_ex() returns a smart pointer unlike create_dataobject()
-			// which returns a raw COM pointer. The less chance we have to accidentally
-			// get the reference counting wrong, the better.
-			pfc::com_ptr_t<IDataObject> pDataObject = piif->create_dataobject_ex(items);
-
-			// Create an IDropSource.
-			// The constructor of IDropSource_tutorial1 is hidden by design; we use the
-			// provided factory method which returns a smart pointer.
-			pfc::com_ptr_t<IDropSource> pDropSource = IDropSource_tutorial1::g_create(m_hWnd);
-
-			DWORD effect;
-			// Perform drag&drop operation.
-			DoDragDrop(pDataObject.get_ptr(), pDropSource.get_ptr(), DROPEFFECT_COPY, &effect);
-		}
-	}
 }
 
-void CTutorialWindow::OnPaint(HDC hdc) {
+void CDragDropPlayWindow::OnPaint(HDC hdc) {
 	CPaintDC dc(m_hWnd);
 	PaintContent(dc.m_ps);
 }
 
-void CTutorialWindow::OnPrintClient(HDC hdc, UINT uFlags) {
+void CDragDropPlayWindow::OnPrintClient(HDC hdc, UINT uFlags) {
 	PAINTSTRUCT ps = { 0 };
 	ps.hdc = hdc;
 	GetClientRect(m_hWnd, &ps.rcPaint);
@@ -199,7 +171,7 @@ void CTutorialWindow::OnPrintClient(HDC hdc, UINT uFlags) {
 	PaintContent(ps);
 }
 
-void CTutorialWindow::PaintContent(PAINTSTRUCT &ps) {
+void CDragDropPlayWindow::PaintContent(PAINTSTRUCT &ps) {
 	if (GetSystemMetrics(SM_REMOTESESSION)) {
 		// Do not use double buffering, if we are running on a Remote Desktop Connection.
 		// The system would have to transfer a bitmap everytime our window is painted.
@@ -211,7 +183,7 @@ void CTutorialWindow::PaintContent(PAINTSTRUCT &ps) {
 	}
 }
 
-void CTutorialWindow::Draw(HDC hdc, CRect rcPaint) {
+void CDragDropPlayWindow::Draw(HDC hdc, CRect rcPaint) {
 	// We will paint the background in the default window color.
 	HBRUSH hBrush = GetSysColorBrush(COLOR_WINDOW);
 	FillRect(hdc, rcPaint, hBrush);
@@ -242,11 +214,11 @@ void CTutorialWindow::Draw(HDC hdc, CRect rcPaint) {
 		}
 	}
 	catch (const std::exception & exc) {
-		console::formatter() << "Exception occurred while drawing " TUTORIAL " window:\n" << exc;
+		console::formatter() << "Exception occurred while drawing " EXTENSIONNAME " window:\n" << exc;
 	}
 }
 
-void CTutorialWindow::OnContextMenu(HWND hWnd, CPoint point) {
+void CDragDropPlayWindow::OnContextMenu(HWND hWnd, CPoint point) {
 	// We need some IDs for the context menu.
 	enum {
 		// ID for "Choose font..."
@@ -322,7 +294,7 @@ void CTutorialWindow::OnContextMenu(HWND hWnd, CPoint point) {
 	DestroyMenu(hMenu);
 }
 
-void CTutorialWindow::OnSetFocus(HWND hWndOld) {
+void CDragDropPlayWindow::OnSetFocus(HWND hWndOld) {
 	metadb_handle_list items;
 	metadb_handle_ptr track;
 	if (static_api_ptr_t<playback_control>()->get_now_playing(track)) {
@@ -331,7 +303,7 @@ void CTutorialWindow::OnSetFocus(HWND hWndOld) {
 	set_selection(items);
 }
 
-void CTutorialWindow::set_selection(metadb_handle_list_cref p_items) {
+void CDragDropPlayWindow::set_selection(metadb_handle_list_cref p_items) {
 	// Only notify other components about changes in our selection,
 	// if our window is the active one.
 	if (::GetFocus() == m_hWnd && m_selection.is_valid()) {
@@ -339,7 +311,7 @@ void CTutorialWindow::set_selection(metadb_handle_list_cref p_items) {
 	}
 }
 
-bool CTutorialWindow::pretranslate_message(MSG * p_msg) {
+bool CDragDropPlayWindow::pretranslate_message(MSG * p_msg) {
 	// Process keyboard shortcuts
 	if (static_api_ptr_t<keyboard_shortcut_manager_v2>()->pretranslate_message(p_msg, m_hWnd)) return true;
 
@@ -349,16 +321,16 @@ bool CTutorialWindow::pretranslate_message(MSG * p_msg) {
 	return false;
 }
 
-void CTutorialWindow::on_playback_new_track(metadb_handle_ptr p_track) {
+void CDragDropPlayWindow::on_playback_new_track(metadb_handle_ptr p_track) {
 	RedrawWindow();
 	set_selection(pfc::list_single_ref_t<metadb_handle_ptr>(p_track));
 }
 
-void CTutorialWindow::on_playback_stop(play_control::t_stop_reason reason) {
+void CDragDropPlayWindow::on_playback_stop(play_control::t_stop_reason reason) {
 	RedrawWindow();
 	set_selection(metadb_handle_list());
 }
 
-void CTutorialWindow::on_playback_dynamic_info_track(const file_info & p_info) {
+void CDragDropPlayWindow::on_playback_dynamic_info_track(const file_info & p_info) {
 	RedrawWindow();
 }
