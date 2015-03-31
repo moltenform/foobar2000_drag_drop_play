@@ -27,14 +27,17 @@ DECLARE_COMPONENT_VERSION(
 
 // Our component will show its window at initialization time, if
 // the window is enabled.
-class initquit_dragdropplay : public initquit {
-	virtual void on_init() {
+class initquit_dragdropplay : public initquit
+{
+	virtual void on_init()
+	{
 		// Show the window, if it is enabled.
 		if (cfg_enabled)
 			CDragDropPlayWindow::ShowWindow();
 	}
 
-	virtual void on_quit() {
+	virtual void on_quit()
+	{
 		// Do nothing.
 		// The window placement variable will automatically store the 
 		// position and size of our window, if it is currently visible.
@@ -46,14 +49,17 @@ static initquit_factory_t< initquit_dragdropplay > foo_initquit;
 /**************************
 Providing menu commands.
 **************************/
-class mainmenu_commands_dragdropplay : public mainmenu_commands {
+class mainmenu_commands_dragdropplay : public mainmenu_commands
+{
 	// Return the number of commands we provide.
-	virtual t_uint32 get_command_count() {
+	virtual t_uint32 get_command_count()
+	{
 		return 1;
 	}
 
 	// All commands are identified by a GUID.
-	virtual GUID get_command(t_uint32 p_index) {
+	virtual GUID get_command(t_uint32 p_index)
+	{
 		static const GUID guid_main_dragdropplay = { 0x79e63d8a, 0x856d, 0x47c3, { 0x9f, 0xa, 0xd8, 0x8a, 0xf3, 0x25, 0x26, 0x4f } };
 
 		if (p_index == 0)
@@ -64,13 +70,15 @@ class mainmenu_commands_dragdropplay : public mainmenu_commands {
 	// Set p_out to the name of the n-th command.
 	// This name is used to identify the command and determines
 	// the default position of the command in the menu.
-	virtual void get_name(t_uint32 p_index, pfc::string_base & p_out) {
+	virtual void get_name(t_uint32 p_index, pfc::string_base & p_out)
+	{
 		if (p_index == 0)
 			p_out = EXTENSIONNAME;
 	}
 
 	// Set p_out to the description for the n-th command.
-	virtual bool get_description(t_uint32 p_index, pfc::string_base & p_out) {
+	virtual bool get_description(t_uint32 p_index, pfc::string_base & p_out)
+	{
 		if (p_index == 0)
 			p_out = "Toggles " EXTENSIONNAME " window.";
 		else
@@ -86,8 +94,10 @@ class mainmenu_commands_dragdropplay : public mainmenu_commands {
 
 	// Execute n-th command.
 	// p_callback is reserved for future use.
-	virtual void execute(t_uint32 p_index, service_ptr_t<service_base> p_callback) {
-		if (p_index == 0 && core_api::assert_main_thread()) {
+	virtual void execute(t_uint32 p_index, service_ptr_t<service_base> p_callback)
+	{
+		if (p_index == 0 && core_api::assert_main_thread())
+		{
 			if (cfg_enabled)
 				// Hide and disable the window.
 				CDragDropPlayWindow::HideWindow();
@@ -109,7 +119,8 @@ class mainmenu_commands_dragdropplay : public mainmenu_commands {
 	}
 
 	// Return whether the n-th command is checked.
-	bool is_checked(t_uint32 p_index) {
+	bool is_checked(t_uint32 p_index)
+	{
 		if (p_index == 0)
 			return cfg_enabled;
 		return false;
