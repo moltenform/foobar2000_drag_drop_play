@@ -8,7 +8,7 @@ How to install:
 3.   Start foobar2000.
 4.   From the View menu, select DragDropPlay.
 
-You can now drag/drop a song onto a playlist and it will start right away.
+You can now drag/drop a song on the end of a playlist and it will start right away.
 To turn this off, close the DragDropPlay window.
 
 If building from source, use foo_dragdropplay.sln. I use the free MSVS Community 2013, other VS may work. Thanks to Holger Stenger for the foobar2000 plugin tutorial.
