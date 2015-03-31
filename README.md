@@ -3,7 +3,7 @@ A plugin for Foobar2000 audio player that plays music instantly after drag and d
 
 How to install:
 
-1.   Download foo_dragdropplay.zip.
+1.   Download [foo_dragdropplay.zip](https://github.com/downpoured/foobar2000_drag_drop_play/releases/download/v1.0-beta/foo_dragdropplay.zip).
 2.   Unzip the archive and copy foo_dragdropplay.dll to the 'components' folder next to foobar2000.exe.
 3.   Start foobar2000.
 4.   From the View menu, select DragDropPlay.
