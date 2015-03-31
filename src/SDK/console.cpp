@@ -42,9 +42,16 @@ void console::printf(const char* p_format,...)
 	va_end(list);
 }
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable:4995 )
+#endif
 void console::printfv(const char* p_format,va_list p_arglist)
 {
 	pfc::string8_fastalloc temp;
 	uPrintfV(temp,p_format,p_arglist);
 	print(temp);
 }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
