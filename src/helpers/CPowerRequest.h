@@ -3,19 +3,19 @@
 #if 0
 
 typedef struct _REASON_CONTEXT {
-    ULONG Version;
-    DWORD Flags;
-    union {
-        struct {
-            HMODULE LocalizedReasonModule;
-            ULONG LocalizedReasonId;
-            ULONG ReasonStringCount;
-            LPWSTR *ReasonStrings;
+	ULONG Version;
+	DWORD Flags;
+	union {
+		struct {
+			HMODULE LocalizedReasonModule;
+			ULONG LocalizedReasonId;
+			ULONG ReasonStringCount;
+			LPWSTR *ReasonStrings;
 
-        } Detailed;
+		} Detailed;
 
-        LPWSTR SimpleReasonString;
-    } Reason;
+		LPWSTR SimpleReasonString;
+	} Reason;
 } REASON_CONTEXT, *PREASON_CONTEXT;
 
 //
@@ -28,41 +28,41 @@ WINBASEAPI
 HANDLE
 WINAPI
 PowerCreateRequest (
-    __in PREASON_CONTEXT Context
-    );
+	__in PREASON_CONTEXT Context
+	);
 
 WINBASEAPI
 BOOL
 WINAPI
 PowerSetRequest (
-    __in HANDLE PowerRequest,
-    __in POWER_REQUEST_TYPE RequestType
-    );
+	__in HANDLE PowerRequest,
+	__in POWER_REQUEST_TYPE RequestType
+	);
 
 WINBASEAPI
 BOOL
 WINAPI
 PowerClearRequest (
-    __in HANDLE PowerRequest,
-    __in POWER_REQUEST_TYPE RequestType
-    );
+	__in HANDLE PowerRequest,
+	__in POWER_REQUEST_TYPE RequestType
+	);
 
 
 #endif
 
 typedef HANDLE (WINAPI * pPowerCreateRequest_t) (
-    __in PREASON_CONTEXT Context
-    );
+	__in PREASON_CONTEXT Context
+	);
 
 typedef BOOL (WINAPI * pPowerSetRequest_t) (
-    __in HANDLE PowerRequest,
-    __in POWER_REQUEST_TYPE RequestType
-    );
+	__in HANDLE PowerRequest,
+	__in POWER_REQUEST_TYPE RequestType
+	);
 
 typedef BOOL (WINAPI * pPowerClearRequest_t) (
-    __in HANDLE PowerRequest,
-    __in POWER_REQUEST_TYPE RequestType
-    );
+	__in HANDLE PowerRequest,
+	__in POWER_REQUEST_TYPE RequestType
+	);
 
 class CPowerRequestAPI {
 public:

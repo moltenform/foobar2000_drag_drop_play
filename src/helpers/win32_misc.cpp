@@ -83,19 +83,19 @@ void GetOSVersionString(pfc::string_base & out) {
 }
 
 static bool running_under_wine(void) {
-    HMODULE module = GetModuleHandle(_T("ntdll.dll"));
-    if (!module) return false;
-    return GetProcAddress(module, "wine_server_call") != NULL;
+	HMODULE module = GetModuleHandle(_T("ntdll.dll"));
+	if (!module) return false;
+	return GetProcAddress(module, "wine_server_call") != NULL;
 }
 static bool FetchWineInfoAppend(pfc::string_base & out) {
 	typedef const char *(__cdecl *t_wine_get_build_id)(void);
-    typedef void (__cdecl *t_wine_get_host_version)( const char **sysname, const char **release );
+	typedef void (__cdecl *t_wine_get_host_version)( const char **sysname, const char **release );
 	const HMODULE ntdll = GetModuleHandle(_T("ntdll.dll"));
 	if (ntdll == NULL) return false;
 	t_wine_get_build_id wine_get_build_id;
 	t_wine_get_host_version wine_get_host_version;
-    wine_get_build_id = (t_wine_get_build_id)GetProcAddress(ntdll, "wine_get_build_id");
-    wine_get_host_version = (t_wine_get_host_version)GetProcAddress(ntdll, "wine_get_host_version");
+	wine_get_build_id = (t_wine_get_build_id)GetProcAddress(ntdll, "wine_get_build_id");
+	wine_get_host_version = (t_wine_get_host_version)GetProcAddress(ntdll, "wine_get_host_version");
 	if (wine_get_build_id == NULL || wine_get_host_version == NULL) {
 		if (GetProcAddress(ntdll, "wine_server_call") != NULL) {
 			out << "wine (unknown version)";

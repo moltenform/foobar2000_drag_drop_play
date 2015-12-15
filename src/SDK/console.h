@@ -10,7 +10,7 @@ namespace console
 	void print_location(const metadb_handle_ptr & src);
 
 	void print(const char*);
-    void printf(const char*,...);
+	void printf(const char*,...);
 	void printfv(const char*,va_list p_arglist);
 
 	//! Usage: console::formatter() << "blah " << somenumber << " asdf" << somestring;

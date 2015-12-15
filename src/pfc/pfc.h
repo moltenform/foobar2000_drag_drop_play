@@ -27,11 +27,11 @@
 #ifndef _SYS_GUID_OPERATOR_EQ_
 __inline bool __InlineIsEqualGUID(REFGUID rguid1, REFGUID rguid2)
 {
-   return (
-      ((unsigned long *) &rguid1)[0] == ((unsigned long *) &rguid2)[0] &&
-      ((unsigned long *) &rguid1)[1] == ((unsigned long *) &rguid2)[1] &&
-      ((unsigned long *) &rguid1)[2] == ((unsigned long *) &rguid2)[2] &&
-      ((unsigned long *) &rguid1)[3] == ((unsigned long *) &rguid2)[3]);
+	return (
+		((unsigned long *) &rguid1)[0] == ((unsigned long *) &rguid2)[0] &&
+		((unsigned long *) &rguid1)[1] == ((unsigned long *) &rguid2)[1] &&
+		((unsigned long *) &rguid1)[2] == ((unsigned long *) &rguid2)[2] &&
+		((unsigned long *) &rguid1)[3] == ((unsigned long *) &rguid2)[3]);
 }
 
 inline bool operator==(REFGUID guidOne, REFGUID guidOther) {return __InlineIsEqualGUID(guidOne,guidOther);}
@@ -45,11 +45,11 @@ inline bool operator!=(REFGUID guidOne, REFGUID guidOther) {return !__InlineIsEq
 #include <stdint.h>
 #include <memory.h>
 typedef struct {
-        uint32_t Data1;
-        uint16_t Data2;
-        uint16_t Data3;
-        uint8_t  Data4[ 8 ];
-    } GUID; //same as win32 GUID
+		uint32_t Data1;
+		uint16_t Data2;
+		uint16_t Data3;
+		uint8_t  Data4[ 8 ];
+	} GUID; //same as win32 GUID
 
 inline bool operator==(const GUID & p_item1,const GUID & p_item2) {
 	return memcmp(&p_item1,&p_item2,sizeof(GUID)) == 0;

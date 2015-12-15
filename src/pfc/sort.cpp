@@ -108,16 +108,16 @@ public:
 private:
 	char * m_base;
 	t_size m_width;
-    int (*m_comp)(const void *, const void *);
+	int (*m_comp)(const void *, const void *);
 	void (*m_swap)(void *, void *, t_size);
 };
 }
 
 void sort_void_ex (
-    void *base,
-    t_size num,
-    t_size width,
-    int (*comp)(const void *, const void *),
+	void *base,
+	t_size num,
+	t_size width,
+	int (*comp)(const void *, const void *),
 	void (*swap)(void *, void *, t_size) )
 {
 	sort(sort_callback_impl_legacy(base,width,comp,swap),num);

@@ -86,11 +86,11 @@ static void __cdecl _PureCallHandler() {
 }
 
 static void _InvalidParameter(
-   const wchar_t * expression,
-   const wchar_t * function, 
-   const wchar_t * file, 
-   unsigned int line,
-   uintptr_t pReserved
+	const wchar_t * expression,
+	const wchar_t * function, 
+	const wchar_t * file, 
+	unsigned int line,
+	uintptr_t pReserved
 ) {
 	RaiseException(0xd142b808 /* random GUID */, EXCEPTION_NONCONTINUABLE, 0, 0);
 }

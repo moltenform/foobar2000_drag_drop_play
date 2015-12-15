@@ -199,14 +199,14 @@ bool mp3_utils::ValidateFrameCRC(const t_uint8 * frameData, t_size frameSize, TM
 static t_uint32 CRC_update(unsigned value, t_uint32 crc)
 {
 	enum { CRC16_POLYNOMIAL = 0x8005 };
-    unsigned i;
-    value <<= 8;
-    for (i = 0; i < 8; i++) {
+	unsigned i;
+	value <<= 8;
+	for (i = 0; i < 8; i++) {
 		value <<= 1;
 		crc <<= 1;
 		if (((crc ^ value) & 0x10000)) crc ^= CRC16_POLYNOMIAL;
-    }
-    return crc;
+	}
+	return crc;
 }
 
 
@@ -219,12 +219,12 @@ void mp3_utils::RecalculateFrameCRC(t_uint8 * frameData, t_size frameSize, TMPEG
 }
 
 static t_uint16 grabFrameCRC(const t_uint8 * frameData, t_size sideInfoLen) {
-    t_uint32 crc = 0xffff;
-    crc = CRC_update(frameData[2], crc);
-    crc = CRC_update(frameData[3], crc);
-    for (t_size i = 6; i < sideInfoLen; i++) {
+	t_uint32 crc = 0xffff;
+	crc = CRC_update(frameData[2], crc);
+	crc = CRC_update(frameData[3], crc);
+	for (t_size i = 6; i < sideInfoLen; i++) {
 		crc = CRC_update(frameData[i], crc);
-    }
+	}
 
 	return (t_uint32) (crc & 0xFFFF);
 }

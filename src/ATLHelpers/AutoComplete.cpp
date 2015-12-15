@@ -32,7 +32,7 @@ public:
 		COM_QI_ENTRY(IEnumString)
 	COM_QI_END()
 
-    HRESULT STDMETHODCALLTYPE Next( ULONG celt, LPOLESTR *rgelt, ULONG *pceltFetched)  {
+	HRESULT STDMETHODCALLTYPE Next( ULONG celt, LPOLESTR *rgelt, ULONG *pceltFetched)  {
 		if (rgelt == NULL) return E_INVALIDARG;
 		ULONG done = 0;
 		while( done < celt && m_walk.is_valid()) {
@@ -49,7 +49,7 @@ public:
 		if (out) memcpy(out, in, lenBytes);
 		return out;
 	}
-    
+	
 	HRESULT STDMETHODCALLTYPE Skip(ULONG celt) {
 		while(celt > 0) {
 			if (m_walk.is_empty()) return S_FALSE;
@@ -57,12 +57,12 @@ public:
 		}
 		return S_OK;
 	}
-    
+	
 	HRESULT STDMETHODCALLTYPE Reset() {
 		m_walk = m_data.first();
 		return S_OK;
 	}
-    
+	
 	HRESULT STDMETHODCALLTYPE Clone(IEnumString **ppenum) {
 		*ppenum = new TImpl(*this); return S_OK;
 	}

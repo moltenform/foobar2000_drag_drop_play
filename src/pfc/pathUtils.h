@@ -4,7 +4,7 @@ namespace pfc {
 #ifdef _WINDOWS
 			typedef string::comparatorCaseInsensitive comparator;
 #else
-            typedef string::comparatorCaseSensitive comparator; // wild assumption
+			typedef string::comparatorCaseSensitive comparator; // wild assumption
 #endif
 
 			string getFileName(string path);

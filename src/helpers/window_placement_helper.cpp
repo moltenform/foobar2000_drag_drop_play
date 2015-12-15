@@ -6,11 +6,11 @@ static bool g_is_enabled()
 }
 
 static BOOL CALLBACK __MonitorEnumProc(
-  HMONITOR hMonitor,  // handle to display monitor
-  HDC hdcMonitor,     // handle to monitor DC
-  LPRECT lprcMonitor, // monitor intersection rectangle
-  LPARAM dwData       // data
-  ) {
+	HMONITOR hMonitor,  // handle to display monitor
+	HDC hdcMonitor,     // handle to monitor DC
+	LPRECT lprcMonitor, // monitor intersection rectangle
+	LPARAM dwData       // data
+	) {
 	RECT * clip = (RECT*)dwData;
 	RECT newclip;
 	if (UnionRect(&newclip,clip,lprcMonitor)) {

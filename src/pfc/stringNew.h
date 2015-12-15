@@ -241,7 +241,7 @@ namespace pfc {
 
 	template<typename TList>
 	string stringCombineList(const TList & list, stringp separator) {
-        typename TList::const_iterator iter = list.first();
+		typename TList::const_iterator iter = list.first();
 		string acc;
 		if (iter.is_valid()) {
 			acc = *iter;
@@ -252,7 +252,7 @@ namespace pfc {
 		return acc;
 	}
 
-    class string;
-    template<> class traits_t<string> : public traits_default {};
+	class string;
+	template<> class traits_t<string> : public traits_default {};
 	
 }

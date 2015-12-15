@@ -4,10 +4,10 @@
 6B29FC40-CA47-1067-B31D-00DD010662DA
 .
 typedef struct _GUID {          // size is 16
-    DWORD Data1;
-    WORD   Data2;
-    WORD   Data3;
-    BYTE  Data4[8];
+	DWORD Data1;
+	WORD   Data2;
+	WORD   Data3;
+	BYTE  Data4[8];
 } GUID;
 
 // {B296CF59-4D51-466f-8E0B-E57D3F91D908}

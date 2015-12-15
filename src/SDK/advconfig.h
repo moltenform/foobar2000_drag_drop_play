@@ -298,7 +298,7 @@ public:
 
 
 /* 
-  Advanced Preferences variable declaration examples 
+	Advanced Preferences variable declaration examples 
 	
 	static advconfig_string_factory mystring("name goes here",myguid,parentguid,0,"asdf");
 	to retrieve state: pfc::string8 val; mystring.get(val);

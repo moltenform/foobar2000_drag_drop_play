@@ -120,11 +120,11 @@ void SHARED_EXPORT uSortStringFree(HANDLE string);
 
 // New in 1.1.12
 HANDLE SHARED_EXPORT CreateFileAbortable(    __in     LPCWSTR lpFileName,
-    __in     DWORD dwDesiredAccess,
-    __in     DWORD dwShareMode,
-    __in_opt LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-    __in     DWORD dwCreationDisposition,
-    __in     DWORD dwFlagsAndAttributes,
+	__in     DWORD dwDesiredAccess,
+	__in     DWORD dwShareMode,
+	__in_opt LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+	__in     DWORD dwCreationDisposition,
+	__in     DWORD dwFlagsAndAttributes,
 	// Template file handle NOT supported.
 	__in_opt HANDLE hAborter
 	);
@@ -810,7 +810,7 @@ public:
 };
 
 
-    
+	
 
 static HMODULE LoadSystemLibrary(const TCHAR * name) {
 	pfc::array_t<TCHAR> buffer; buffer.set_size( MAX_PATH + _tcslen(name) + 2 );

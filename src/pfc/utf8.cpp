@@ -137,23 +137,23 @@ t_size utf8_encode_char(unsigned wide,char * target) throw()
 
 	switch (count)
 	{
-    case 6:
+	case 6:
 		target[5] = 0x80 | (wide & 0x3F);
 		wide = wide >> 6;
 		wide |= 0x4000000;
-    case 5:
+	case 5:
 		target[4] = 0x80 | (wide & 0x3F);
 		wide = wide >> 6;
 		wide |= 0x200000;
-    case 4:
+	case 4:
 		target[3] = 0x80 | (wide & 0x3F);
 		wide = wide >> 6;
 		wide |= 0x10000;
-    case 3:
+	case 3:
 		target[2] = 0x80 | (wide & 0x3F);
 		wide = wide >> 6;
 		wide |= 0x800;
-    case 2:
+	case 2:
 		target[1] = 0x80 | (wide & 0x3F);
 		wide = wide >> 6;
 		wide |= 0xC0;

@@ -301,7 +301,7 @@ template<typename T,typename t_storage>
 class list_impl_t : public list_base_t<T>
 {
 public:
-    typedef list_impl_t<T, t_storage> t_self;
+	typedef list_impl_t<T, t_storage> t_self;
 	list_impl_t() {}
 	list_impl_t(const t_self & p_source) { add_items(p_source); }
 
@@ -573,7 +573,7 @@ protected:
 template<typename t_item, template<typename> class t_alloc = pfc::alloc_fast >
 class list_t : public list_impl_t<t_item,pfc::array_t<t_item,t_alloc> > { 
 public:
-    typedef list_t<t_item, t_alloc> t_self;
+	typedef list_t<t_item, t_alloc> t_self;
 	template<typename t_in> t_self & operator=(t_in const & source) {this->remove_all(); this->add_items(source); return *this;}
 	template<typename t_in> t_self & operator+=(t_in const & p_source) {this->add_item(p_source); return *this;}
 	template<typename t_in> t_self & operator|=(t_in const & p_source) {this->add_items(p_source); return *this;}
@@ -582,7 +582,7 @@ public:
 template<typename t_item, t_size p_fixed_count, template<typename> class t_alloc = pfc::alloc_fast >
 class list_hybrid_t : public list_impl_t<t_item,pfc::array_hybrid_t<t_item,p_fixed_count,t_alloc> > {
 public:
-    typedef list_hybrid_t<t_item, p_fixed_count, t_alloc> t_self;    
+	typedef list_hybrid_t<t_item, p_fixed_count, t_alloc> t_self;    
 	template<typename t_in> t_self & operator=(t_in const & source) {this->remove_all(); this->add_items(source); return *this;}
 	template<typename t_in> t_self & operator+=(t_in const & p_source) {this->add_item(p_source); return *this;}
 	template<typename t_in> t_self & operator|=(t_in const & p_source) {this->add_items(p_source); return *this;}

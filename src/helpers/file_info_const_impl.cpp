@@ -27,10 +27,10 @@ static const char * optimize_infoname(const char * p_string) {
 /*
 order of things
 
-  meta entries
-  meta value map
-  info entries 
-  string buffer
+	meta entries
+	meta value map
+	info entries 
+	string buffer
 
 */
 
