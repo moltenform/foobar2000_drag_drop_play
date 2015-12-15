@@ -18,7 +18,7 @@ DECLARE_COMPONENT_VERSION(
 	"1.0-beta",
 	// about text
 	"Plugin for Foobar2000 audio player that plays music instantly after drag and drop\n"
-	"https://github.com/moltenjs/foobar2000_drag_drop_play\n"
+	"https://github.com/moltenform/foobar2000_drag_drop_play\n"
 	"\n"
 	"contributors:\n"
 	"Ben Fisher"

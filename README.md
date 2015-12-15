@@ -5,7 +5,7 @@ When you drag/drop a song, Foobar2000 adds it to the current playlist instead of
 
 How to install:
 
-1.   Download [foo_dragdropplay.zip](https://github.com/moltenjs/foobar2000_drag_drop_play/releases/download/v1.0-beta/foo_dragdropplay.zip).
+1.   Download [foo_dragdropplay.zip](https://github.com/moltenform/foobar2000_drag_drop_play/releases/download/v1.0-beta/foo_dragdropplay.zip).
 2.   Unzip the zip file and copy `foo_dragdropplay.dll` to the 'components' folder next to foobar2000.exe.
 3.   Start foobar2000.
 4.   From the View menu, click DragDropPlay. Some text will appear indicating that the plugin in active.

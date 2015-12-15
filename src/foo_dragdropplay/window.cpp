@@ -201,7 +201,7 @@ void CDragDropPlayWindow::Draw(HDC hdc, CRect rcPaint)
 		const char* hardcodedtext[] = { 
 			"You can now drag/drop a song onto a playlist and it will start right away.",
 			"To turn this off, close this window.",
-			"https://github.com/moltenjs/foobar2000_drag_drop_play"
+			"https://github.com/moltenform/foobar2000_drag_drop_play"
 		};
 		for (int i = 0; i < _countof(hardcodedtext); i++)
 		{
